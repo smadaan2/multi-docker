@@ -1,0 +1,53 @@
+version: '3'
+services: 
+  postgres:
+    image: 'postgres:latest'
+  redis:
+    image: 'redis:latest'
+  nginx:
+    restart: always  #I always would like to run nginx i.e restart policy
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'   #3050 is outside container port
+  api:
+    depends_on:
+      - postgres
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules #Leave that folder as it is inside the container dont try to change   
+      - ./server:/app  #our app tries to access anythingh inside app directory it will redirect to server dir inside our current dir except node_modules 
+    environment:
+      - REDIS_HOST=redis 
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+  
+
+
+
+
+  
