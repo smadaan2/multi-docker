@@ -1,0 +1,28 @@
+language: generic 
+sudo: required
+
+services: 
+  - docker
+
+before_install:
+  - docker build -t shikha/react-test -f ./client/Dockerfile.dev ./client
+
+#Due to a change in how the Jest library works with Create React App
+#primarly test running section
+script: 
+  - docker run shikha/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t shikha/multi-client ./client
+  - docker build -t shikha/multi-nginx ./nginx
+  - docker build -t shikha/multi-server ./server
+  - docker build -t shikha/multi-worker ./worker
+
+ #Login to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+ #Push the images to docker hub
+  - docker push shikha/multi-client
+  - docker push shikha/multi-nginx
+  - docker push shikha/multi-server
+  - docker push shikha/multi-worker
