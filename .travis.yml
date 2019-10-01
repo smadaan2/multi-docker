@@ -22,7 +22,7 @@ after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
  #Push the images to docker hub
-  - docker push smadaan2/multi-client:latest
-  - docker push smadaan2/multi-nginx:latest
-  - docker push smadaan2/multi-server:latest
-  - docker push smadaan2/multi-worker:latest
+  - docker push smadaan2/multi-client
+  - docker push smadaan2/multi-nginx
+  - docker push smadaan2/multi-server
+  - docker push smadaan2/multi-worker
