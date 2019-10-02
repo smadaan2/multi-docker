@@ -26,3 +26,17 @@ after_success:
   - docker push smadaan2/multi-nginx
   - docker push smadaan2/multi-server
   - docker push smadaan2/multi-worker
+
+ # setting up elasticbean connection 
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-eu-west-1-020122258339
+  bucket_path: multi-docker
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: 
+    secure: "$AWS_SECRET_KEY"   
